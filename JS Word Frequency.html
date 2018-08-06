@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <style>
+      #container{
+        font-family:monospace;
+        font-weight:bold;
+      }
+      
+        div#mytxtbox{
+            background-color:lightgrey;
+            padding:10px;
+            border:2px solid black;
+        }
+        
+        textarea{
+            text-align:left;
+            height:100px;
+            width: 300px;
+            overflow:auto;
+        }
+        #btn-go{
+            background-color:black;
+            color:white;
+            height:50px;
+            width: 300px;
+        }
+        table{
+            border-collapse:collapse;
+        }
+        table,th, td {
+            border:1px solid black;
+        }
+        
+        p{
+            background-color:white;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+  
+  <body>
+
+    <div id=mytxtbox>
+        <h3>Enter Text Below:</h3>
+        <br/>
+        <textarea id="mybox">Enter Sentence enter wisely what You want you</textarea>
+        <br/>
+        <br/>
+
+        <button id="btn-go" onclick="returnResult(document.getElementById('mybox').value)">Go</button>
+        <br/>
+        <br/>
+        <label>Number of unique values:</label>
+        <p id="results"></p>
+
+        <label>List of unique values(ascending):</label>
+        <br/>
+        <p id="results2"></p>
+        <br/>
+        <label>List of values and frequency:</label>
+        <br/>
+        <br/>
+        <table id="myTable">
+          <tr>
+            <th>Value</th>
+            <th>Frequency</th>
+          </tr>
+        </table>
+    </div>
+
+    <script>
+        function returnResult(usertxt){
+            //array of textbox values
+            var usertxtArray = usertxt.split(" ");
+            //create a hashtable with values and corresponding frequency
+            var freqTbl = createFreqTbl(usertxtArray);
+            
+            var uniquekeys=[];
+            //add keys from freqTbl to empty array uniquekeys
+            for (k in freqTbl)
+            {
+                if (freqTbl[k]==1)
+                {
+                    uniquekeys.push(k);
+                }
+            }
+            //Output 1: number of unique values
+            document.getElementById("results").innerHTML= uniquekeys.length;
+            //Output 2: list of unique values
+            document.getElementById("results2").innerHTML= uniquekeys.sort(function (a, b) {
+            return a.localeCompare(b, 'en', {'sensitivity': 'base'});
+            });
+            //Output 3: list of unique values with frequency
+            for (k in freqTbl)
+            {
+              addTableData(k,freqTbl[k]);
+            }
+        }
+        //populate table with data
+        function addTableData(k,v) {
+            var rows="";
+        rows += "<td>" + k + "</td><td>" + v + "</td>";
+            var tbody = document.querySelector("#myTable");
+            var tr = document.createElement("tr");
+
+            tr.innerHTML = rows;
+            tbody.appendChild(tr)
+
+        }
+        
+        function createFreqTbl(usertxt){
+            var tbl= {};
+            var isUnique=true;
+            
+            for(i =0; i<usertxt.length;i++)
+            {
+                //check if key is already in table
+                for (word in tbl)
+                {
+                  if(word.toLowerCase() == usertxt[i].toLowerCase())
+                  {
+                    //increment frequency 
+                    tbl[word]++;
+                    isUnique= false;
+                    break;
+                  }
+                  else 
+                  {
+                    isUnique= true;
+                  }
+                    
+
+                }
+                //add key with  value of 1 to table
+                if(isUnique)
+                {
+                  tbl[usertxt[i]]=1;
+                }
+                
+            }
+            
+            return tbl;
+        }
+    </script>
+
+</body>
+</html>
